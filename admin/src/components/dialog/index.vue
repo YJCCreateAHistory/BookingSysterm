@@ -29,7 +29,6 @@
 <script setup lang="ts">
 import { ref, defineProps, defineEmits, reactive } from 'vue';
 import { assginAuthority } from '@/api/authority';
-
 const db = defineProps({
   isVisible: Boolean,
   authority: Object,
