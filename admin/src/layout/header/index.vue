@@ -67,8 +67,8 @@ const exit = async () => {
   for(const [key, value] of Object.entries(temp)) {
     arr.push(key);
   }
-  await store.commit('removeAllProfile', {key:arr, value:{}});
-  await removeToken('accessToken', 'vuex');
+  store.commit('removeAllProfile', {key:arr, value:{}});
+  removeToken('accessToken', 'vuex');
   await router.push({
     name: 'Login'
   })

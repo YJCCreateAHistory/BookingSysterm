@@ -4,7 +4,8 @@ const routes = [
     name:'home',
     component:()=>import('@/view/home/index.vue'),
     meta:{
-      title:'home'
+      title:'home',
+      keepAlive:true
     }
   }
 ]

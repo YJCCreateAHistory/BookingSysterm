@@ -1,12 +1,7 @@
-
 import pageRoutes from './module/page';
 import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router';
-import { routesType } from '@/types/index';
 import { useStore } from 'vuex';
-import { refresh } from '@/utils/token';
 // 登录时间
-const store = useStore();
-
 const routes: Array<RouteRecordRaw> = [
   {
     path: '/',
@@ -18,7 +13,6 @@ const routes: Array<RouteRecordRaw> = [
   },
   ...pageRoutes,
 ]
-
 const router = createRouter({
   history: createWebHistory(),
   routes,

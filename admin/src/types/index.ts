@@ -1,4 +1,14 @@
 /**
+ * @description 公共类型
+ * @interface
+*/
+type secondObejct = {
+  [key:string] : string | number | boolean | []
+}
+export interface objectTypes {
+  [key:string] : string | number | boolean | secondObejct
+}
+/**
  * @description 页面数据类型
  * @interface
 */
@@ -12,6 +22,25 @@ export interface formType {
 export interface emitType{
 	(e:string, data:boolean):void
 }
+
+export interface tempTypes {
+  firstAuthority:{
+    [key:string]:string
+  },
+  secondAuthority:{
+    [key:string]:string
+  },
+}
+
+export interface ownTypes {
+  first:{
+    [key:string]:string
+  },
+  second:{
+    [key:string]:string
+  },
+}
+
 /**
  * @description 路由类型
  * @interface

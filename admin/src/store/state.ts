@@ -7,13 +7,14 @@ const state = {
     uid:'',
     avatar:'',
     usersList:[],
-    auth:'administrators'
+    auth:''
   },
   timesmap:{
     loginTime:''
   },
   page:{
-    queryInfo:{}
+    queryInfo:{},
+    userPage:[]
   }
 
 }

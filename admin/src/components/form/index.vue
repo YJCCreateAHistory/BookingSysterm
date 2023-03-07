@@ -52,7 +52,7 @@ import { checkTelephone } from '@/utils/regExp';
 import { setToken } from '@/utils/token';
 import { saveNowTime } from '@/utils/date';
 import { useStore } from 'vuex';
-import { notification } from '@/utils/notification';
+import { useNotification } from '@/hooks/useNotification';
 import { usersList } from '@/api/user';
 
 const router = useRouter();
@@ -67,71 +67,56 @@ const login = async () => {
   if (checkTelephone<string>(userinfo.form.telephone)) {
     // 登录
     const res = await login_api(userinfo.form);
+    const commits: { [key: string]: string } = {
+      uid: 'saveUid',
+      refreshToken: 'saveRefreshToken',
+      time: 'saveNowTime',
+      avatar: 'saveAvatarUrl',
+      list: 'takeUsersList',
+      queryInfo: 'queryInfo',
+      auth: 'setUserAuthorityLevel'
+    };
     switch (res.status) {
       case 200:
         const token: string = 'accessToken';
-        setToken(token, res.data.accessToken);
-        const commits: { [key: string]: string } = {
-          uid: 'saveUid',
-          refreshToken: 'saveRefreshToken',
-          time: 'saveNowTime',
-          avatar: 'saveAvatarUrl',
-          list:'takeUsersList',
-          queryInfo:'queryInfo',
-          auth:'administrators'
-        };
         // 分页信息
-        const query:{[key:string]:number} = {
-          pageSize:1,
-          limit:20,
-          offset:0
+        const query: { [key: string]: number } = {
+          pageSize: 1,
+          limit: 20,
+          offset: 0
         };
-        store.commit(commits.time, { key: 'loginTime', value: saveNowTime() });
-        store.commit(commits.uid, { key: 'uid', value: res.data.uid });
-        store.commit(commits.refreshToken, { key: 'refreshToken', value: res.data.refreshToken });
-        store.commit(commits.avatar, { key: 'avatar', value: res.data.avatar });
-        if(res.data.role === 'administrators') {
-          store.commit(commits.auth, {key:'administrators', value:res.data.role});
-        }2
-        if (window.localStorage.getItem(token)) {
-          store.commit(commits.queryInfo, { key:'queryInfo', value:query})
-          await store.dispatch(commits.list);
+        if (res.data.role === '超级管理员') {
+          setToken(token, res.data.accessToken);
+          store.commit(commits.queryInfo, { key: 'queryInfo', value: query });
+          store.dispatch(commits.list);
+          store.commit(commits.time, { key: 'loginTime', value: saveNowTime() });
+          store.commit(commits.uid, { key: 'uid', value: res.data.uid });
+          store.commit(commits.refreshToken, { key: 'refreshToken', value: res.data.refreshToken });
+          store.commit(commits.avatar, { key: 'avatar', value: res.data.avatar });
+          store.commit(commits.auth, { key: 'auth', value: 'administrators' });
           router.push({
             name: 'home',
             params: {
               uid: res.data.uid,
             }
           });
+          useNotification('success', '登录成功', 'Success', 200);
+          break;
+        } else {
+          useNotification('error', '抱歉~您没有该系统的权限！cnjc_19991222@163.com', 'Error', 200);
+          break;
         }
-        ElNotification({
-          title: 'Success',
-          message: '登录成功',
-          type: 'success',
-        })
-        break;
       case 400:
-        ElNotification({
-          title: 'Warning',
-          message: '您没有该系统的权限！请联系管理员获取：cnjc_19991222@163.com',
-          type: 'warning',
-        })
+        useNotification('warning', '您没有该系统的权限！请联系管理员获取：cnjc_19991222@163.com', 'warning', 200);
         break;
       default:
-        ElNotification({
-          title: 'Error',
-          message: '您的手机号或者密码错误，请重新输入哦~',
-          type: 'error',
-        })
+        useNotification('error', '您的手机号或者密码错误，请重新输入哦~', 'Error', 200);
         break;
-    }
+    };
   } else {
-    ElNotification({
-      title: 'Warning',
-      message: '手机号出错啦！请检查手机号~',
-      type: 'warning',
-    })
-  }
-}
+    useNotification('warning', '手机号出错啦！请检查手机号~', 'Warning', 200);
+  };
+};
 </script>
 
 <style scoped lang="scss">

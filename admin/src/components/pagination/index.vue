@@ -22,6 +22,7 @@ const flag = reactive<{ [key: string]: { [key: string]: boolean } }>({
 });
 const emits = defineEmits<{ (emits: string, value: {[key:string]:string | number}): void }>();
 const handleCurrentChange = async (val: number) => {
+  store.commit('savePageNumber', {key:'userPage', value:val} )
   // 当前页码*数据偏移量：打上页码标识存在本地
   const query:{[key:string]:number} = { // 获取不同页数据
     offset: (val - 1) * 20,
@@ -29,8 +30,10 @@ const handleCurrentChange = async (val: number) => {
   };
   const res = await usersList(query);
   res.data.index = val - 1;
-  store.commit('handlePageChange', {key:'usersList', value:res.data});
-  emits('sendPageHandle', res.data);
+  if(store.state.page.userPage.indexOf(val) === -1) {
+    store.commit('handlePageChange', {key:'usersList', value:res.data});
+    emits('sendPageHandle', res.data);
+  }
 };
 </script>
 
